@@ -24,11 +24,11 @@ end
 #Assignment: Clean phone numbers
 def clean_phone_number(phone_number)
 
-    cleaned_num = phone_number.gsub(/[^0-9]/, '')
+    cleaned_num = phone_number.gsub(/\D/, '')
 
     if cleaned_num.length == 11 && cleaned_num[0] == '1'
         cleaned_num[1..10]
-    elsif phone_number.length != 10
+    elsif cleaned_num.length != 10
         cleaned_num = ''
     else
         cleaned_num
