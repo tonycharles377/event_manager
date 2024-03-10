@@ -21,6 +21,21 @@ def legislators_by_zipcode(zipcode)
     end
 end
 
+#Assignment: Clean phone numbers
+def clean_phone_number(phone_number)
+
+    cleaned_num = phone_number.gsub(/[^0-9]/, '')
+
+    if cleaned_num.length == 11 && cleaned_num[0] == '1'
+        cleaned_num[1..10]
+    elsif phone_number.length != 10
+        cleaned_num = ''
+    else
+        cleaned_num
+    end
+
+end
+
 def save_thank_you_letter(id,form_letter)
     #create an output folder
     Dir.mkdir('output') unless Dir.exist?('output')
@@ -47,9 +62,12 @@ contents = CSV.open(
 contents.each do |row|
     id = row[0]
     name = row[:first_name]
+    phone_number = clean_phone_number(row[:homephone])
     zipcode = clean_zipcode(row[:zipcode])
     legislators = legislators_by_zipcode(zipcode)
     form_letter = erb_template.result(binding)
 
     save_thank_you_letter(id, form_letter)
+
+    puts "#{name} can sign up for sms alert for phone number #{phone_number}" if phone_number != ''
 end
