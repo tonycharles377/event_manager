@@ -24,7 +24,7 @@ end
 #Assignment: Clean phone numbers
 def clean_phone_number(phone_number)
 
-    cleaned_num = phone_number.gsub(/\D/, '')
+    cleaned_num = phone_number.gsub(/[^0-9]/, '')
 
     if cleaned_num.length == 11 && cleaned_num[0] == '1'
         cleaned_num[1..10]
@@ -34,6 +34,22 @@ def clean_phone_number(phone_number)
         cleaned_num
     end
 
+end
+
+#Assignment: Time targeting
+def time_targeting(reg_date_time_arr)
+    hours = []
+
+    reg_date_time_arr.each do |reg_date_time|
+        hours << reg_date_time.hour
+    end
+    
+    #create a hash where keys are unique numbers, and values are arrays of occurrences of each number
+    frequency_hash = hours.group_by {|num| num}
+
+    most_repeated_num = frequency_hash.max_by {|_, occurrences| occurrences.length} &.first
+
+    puts "Peack registaration hour is #{most_repeated_num}:00hrs"
 end
 
 def save_thank_you_letter(id,form_letter)
@@ -58,11 +74,14 @@ contents = CSV.open(
     headers: true,
     header_converters: :symbol
 )
+reg_date_time_arr = []
 
 contents.each do |row|
     id = row[0]
     name = row[:first_name]
     phone_number = clean_phone_number(row[:homephone])
+    reg_date_time = Time.strptime(row[:regdate], "%m/%d/%y %H:%M")
+    reg_date_time_arr << reg_date_time
     zipcode = clean_zipcode(row[:zipcode])
     legislators = legislators_by_zipcode(zipcode)
     form_letter = erb_template.result(binding)
@@ -71,3 +90,5 @@ contents.each do |row|
 
     puts "#{name} can sign up for sms alert for phone number #{phone_number}" if phone_number != ''
 end
+
+time_targeting(reg_date_time_arr)
