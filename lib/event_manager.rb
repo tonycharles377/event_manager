@@ -52,6 +52,21 @@ def time_targeting(reg_date_time_arr)
     puts "Peack registaration hour is #{most_repeated_num}:00hrs"
 end
 
+#Assignment: Day of the week targeting
+def days_targeting(reg_date_time_arr)
+    days = []
+
+    reg_date_time_arr.each do |reg_date_time|
+        days << reg_date_time.wday
+    end
+
+    frequency_hash = days.group_by {|num| num}
+
+    peack_reg_day = frequency_hash.max_by{|_, occurrences| occurrences.length}&.first
+
+    puts "Peack registaration day is on #{Date::DAYNAMES[peack_reg_day]}"
+end
+
 def save_thank_you_letter(id,form_letter)
     #create an output folder
     Dir.mkdir('output') unless Dir.exist?('output')
@@ -92,3 +107,4 @@ contents.each do |row|
 end
 
 time_targeting(reg_date_time_arr)
+days_targeting(reg_date_time_arr)
